@@ -12,7 +12,7 @@
           :fixed="item.showFixed"
         >
           <template #default="scope">
-            <span v-if="item.value === 'control'" v-for="(val, num) in tableParams.tableOperations" :key="num">
+            <span v-if="item.value === 'control'" v-for="(val, num) in tableParams.operations" :key="num">
               <el-button link type="primary" size="small" @click="handleClick(val.type)">{{val.label}}</el-button>
             </span>
             <span v-else>{{ scope.row[`${item.value}`] }}</span>
@@ -67,7 +67,7 @@
         showFixed: true
       }
     ],
-    tableOperations: []
+    operations: []
   })
   const tablePagination = reactive({
     currentPage: 1,
@@ -111,7 +111,7 @@
     const { header, tableData, tableOperations } = props.tableItems;
     tableParams.headers = header;
     tableParams.datas = tableData;
-    tableParams.tableOperations = tableOperations;
+    tableParams.operations = tableOperations;
     const {currentPage, pageSize} = props.pagination;
     tablePagination.currentPage = currentPage;
     tablePagination.pageSize = pageSize;

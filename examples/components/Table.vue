@@ -1,5 +1,5 @@
 <template>
-  <DynamicTable :table-items="tableItems" :pagination="pagination"></DynamicTable>
+  <DynamicTable :table-items="tableItems" :pagination="pagination" @data-change="tableChange"></DynamicTable>
 </template>
 
 <script setup lang="ts">
@@ -55,6 +55,19 @@
     currentPage: 1,
     pageSize: 10
   })
+  
+  const tableChange = (params: {val: number}) => {
+    const { type } = params;
+    switch (type) {
+      case 'pagination':
+        pagination.currentPage = params.val;
+        break;
+      case 'edit':
+        break;
+      default:
+        break;
+    }
+  }
 </script>
 
 <style scoped lang="scss">
