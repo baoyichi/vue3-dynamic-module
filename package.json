@@ -2,13 +2,19 @@
   "name": "vue3-dynamic-module",
   "version": "1.0.4",
   "private": false,
-  "keywords": ["vue3-dynamic-module", "dynamic-module", "table"],
+  "keywords": [
+    "vue3-dynamic-module",
+    "dynamic-module",
+    "table"
+  ],
   "scripts": {
     "dev": "vite --force --host",
     "build": "vite build",
     "preview": "vite preview"
   },
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "main": "lib/vue3-dynamic-module.umd.js",
   "module": "lib/vue3-dynamic-module.mjs",
   "exports": {
@@ -19,6 +25,7 @@
     }
   },
   "dependencies": {
+    "axios": "^1.4.0",
     "element-plus": "^2.3.6",
     "vue": "^3.3.2"
   },
