@@ -1,7 +1,7 @@
 node_modules
 .DS_Store
-lib/*
 *.local\
+lib
 
 # Editor directories and files
 .vscode/*

@@ -8,6 +8,7 @@
 | 功能       | 状态 |
 |----------| ---- |
 | 自定义表头    | ✅   |
+| 列设置      | ✅   |
 | 自定义列宽    | ✅   |
 | 斑马纹      | ✅   |
 | 多选       | ✅   |
@@ -49,13 +50,42 @@ npm i vue3-dynamic-module
 ```vue
 
 <template>
-  <dynamic-table :table-items="tableItems" :pagination="pagination" @data-change="tableChange" />
+  <dynamic-table 
+    :table-items="tableItems" 
+    :pagination="pagination"
+    @handle-table-control="handleTableControl"
+    @data-change="tableChange" />
 </template>
 <script setup>
   import DynamicTable from "./dynamic-table.vue";
   import {reactive} from "vue";
 
   const tableItems = reactive({
+    // 表格操作，自定义操作项
+    tableControl: [
+      {
+        // key值，必传
+        code: '1',
+        /**
+         * 按钮类型
+         * basic ===> 基础，带背景的按钮
+         * secondary  ===>  次要按钮，浅色背景
+         * threeLevel ===>  三级按钮，灰色背景，字体带颜色
+         * text ===>  文字按钮
+         * iconTextBt ===>  带icon和背景的按钮
+         * iconBt ===>  带icon的按钮
+         */
+        btType: 'iconTextBt',
+        type: 'primary',
+        label: '新建',
+        // 带tooltip的按钮提示背景色
+        effect: 'dark',
+        // tooltip提示方向
+        placement: 'top',
+        // 自定义icon，存储在assets/icons下,格式为png的图片
+        icon: 'add'
+      }
+    ],
     // 表头
     header: [
       {
@@ -64,6 +94,8 @@ npm i vue3-dynamic-module
         width: '120',
         // 是否显示
         show: true,
+        // 列设置时，选项是否可选,true为不可选
+        isChecked: false,
         // 当内容过长被隐藏时显示 tooltip
         showOverflow: true,
         // 列是否固定在左侧或者右侧：true/'left'/'right'，true默认为左侧
@@ -95,6 +127,14 @@ npm i vue3-dynamic-module
     pageSize: 10,
     total: 0
   });
+
+  /**
+   * 整个表的操作，通过
+   * @param type
+   */
+  const handleTableControl = (type: string) => {
+    console.log(type);
+  }
 
   /**
    * 表格的操作
