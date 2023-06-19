@@ -63,7 +63,6 @@
     </div>
     <div class="table-wrap">
       <el-table
-        v-loading="loading"
         ref="multipleTableRef"
         :data="tableParams.datas"
         @selection-change="handleSelectionChange"
@@ -83,7 +82,7 @@
           >
             <template #default="scope">
             <span v-if="item.value === 'control'" v-for="(val, num) in tableParams.operations" :key="num">
-              <el-button link type="primary" size="small" @click="handleClick(val.type)">{{val.label}}</el-button>
+              <el-button link type="primary" size="small" @click="handleClick(val.type, scope.row)">{{val.label}}</el-button>
             </span>
               <span v-else-if="item.showImage">
               <el-image :src="`https://www.bing.com${scope.row[`${item.value}`]}`" fit="scale-down" />
@@ -163,7 +162,6 @@
     total: 0
   });
   const url = 'https://www.bing.com';
-  const loading = ref(true);
   const isMultiple = ref(false);
   const multipleSelection = ref([]);
   const controlList = ref([]);
@@ -179,7 +177,6 @@
   watch(
     () => props.tableItems,
     (val) => {
-      loading.value = true;
       if (val) {
         dataRender();
       }
@@ -229,7 +226,7 @@
     tablePagination.currentPage = currentPage;
     tablePagination.pageSize = pageSize;
     tablePagination.total = total;
-    loading.value = false;
+    multipleSelection.value = [];
     showAllColum();
   }
   /**
@@ -237,16 +234,22 @@
    * @param type
    */
   const handleTableControl = (type: string) => {
-    emit('handleTableControl', type);
+    const params = {
+      type: type
+    }
+    if (type === '删除') {
+      params['value'] = multipleSelection.value;
+    }
+    emit('handleTableControl', params);
   }
   /**
    * 表格数据操作
    * @param type: 操作的类型
    */
-  const handleClick = (type: string) => {
+  const handleClick = (type: string, row: any) => {
     const params = {
       type: type,
-      value: ''
+      value: row
     }
     emit('dataChange', params);
   }

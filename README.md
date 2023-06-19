@@ -129,7 +129,7 @@ npm i vue3-dynamic-module
   });
 
   /**
-   * 整个表的操作，通过
+   * 整个表的操作，通过type判断是新增、删除或其他自定义操作
    * @param type
    */
   const handleTableControl = (type: string) => {
@@ -144,7 +144,6 @@ npm i vue3-dynamic-module
     const { type } = params;
     if (type === 'pagination') {
       pagination.currentPage = params.val;
-      //   刷新数据表
     } else if (type === 'edit') {
       //   编辑的接口
     } else {

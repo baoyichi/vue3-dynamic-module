@@ -1,17 +1,52 @@
 <template>
+  <DynamicSearch :search-item="searchItem"></DynamicSearch>
   <DynamicTable
     :table-items="tableItems"
     :pagination="pagination"
     @handle-table-control="handleTableControl"
     @data-change="tableChange"
   ></DynamicTable>
+  <DialogTips :dialog-info="dialogData" @handle-tips-dialog="handleTipsDialog"></DialogTips>
+  <DynamicForm :dialog-data="dialogData" :form-data="formData" :form-items="formItems" @handle-form-dialog="handleFormDialog"></DynamicForm>
 </template>
 
 <script setup lang="ts">
   import DynamicTable from "../../packages/table/dynamic-table.vue";
   import { onMounted, reactive } from "vue";
   import { getJson } from "@/api/bacground-img";
+  import {ElMessage} from "element-plus";
+  import DialogTips from "../../packages/tips/dialog-tips.vue";
+  import DynamicForm from "../../packages/form/dynamic-form.vue";
+  import DynamicSearch from "../../packages/search/dynamic-search.vue";
 
+  const searchItem = reactive([
+    {
+      label: '名称',
+      value: '',
+      isInput: true
+    },
+    {
+      label: '类型',
+      value: '',
+      isSelect: true,
+      options: []
+    },
+    {
+      label: '',
+      value: '',
+      options: [
+        {
+          label: '重置',
+          type: ''
+        },
+        {
+          label: '查询',
+          type: 'primary'
+        }
+      ],
+      isBt: true
+    }
+  ]);
   const tableItems = reactive({
     header: [
       {
@@ -68,18 +103,6 @@
     ],
     tableControl: [
       {
-        code: '1',
-        btType: 'basic',
-        type: 'success',
-        label: '成功'
-      },
-      {
-        code: '2',
-        btType: 'secondary',
-        type: 'warning',
-        label: '警告'
-      },
-      {
         code: '3',
         btType: 'iconTextBt',
         type: 'primary',
@@ -92,12 +115,6 @@
         type: 'danger',
         label: '删除',
         icon: 'del'
-      },
-      {
-        code: '5',
-        btType: 'text',
-        type: 'primary',
-        label: '点我'
       },
       {
         code: '6',
@@ -123,15 +140,154 @@
       {
         type: 'download',
         label: '下载原图'
+      },
+      {
+        type: 'edit',
+        label: '编辑'
       }
     ],
-    multiple: false
-  })
+    multiple: true
+  });
   const pagination = reactive({
     currentPage: 1,
     pageSize: 10,
     total: 0
-  })
+  });
+  // 模态框
+  const dialogData = reactive({
+    tipsVisible: false,
+    formVisible: false,
+    title: '',
+    width: '30%',
+    info: ''
+  });
+  // 密码校验
+  const checkPass = (rule: any, value: any, callback: any) => {
+    if (value === '') {
+      if (dialogData.title === '新增') {
+        callback(new Error('请输入密码'));
+      } else {
+        callback();
+      }
+    } else {
+      callback();
+    }
+  };
+  // 表单label项
+  const formItems = reactive([
+    {
+      field: 'name',
+      label: '名称',
+      placeholder: '请输入名称',
+      type: 'input',
+      isRequired: true,
+      rule: [
+        {
+          required: true,
+          message: '请输入名称',
+          trigger: 'blur'
+        }
+      ],
+      showPassword: false
+    },
+    {
+      field: 'password',
+      label: '密码',
+      placeholder: '请输入密码',
+      type: 'input',
+      isRequired: true,
+      rule: [
+        {
+          required: true,
+          trigger: 'blur',
+          validator: checkPass
+        }
+      ],
+      showPassword: true,
+      disable: false
+    },
+    {
+      field: 'category',
+      label: '类型',
+      placeholder: '请选择类型',
+      type: 'select',
+      options: [
+        {
+          label: '风景',
+          value: 'view'
+        },
+        {
+          label: '动物',
+          value: 'animal'
+        }
+      ],
+      isRequired: false,
+      rule: [],
+      showPassword: false
+    },
+    {
+      field: 'region',
+      label: '地区',
+      placeholder: '请选择地区',
+      type: 'treeselect',
+      options: [
+        {
+          value: '1',
+          label: '四川省',
+          children: [
+            {
+              value: '1-1',
+              label: '成都市',
+              children: [
+                {
+                  value: '1-1-1',
+                  label: '天府新区',
+                },
+              ],
+            },
+          ],
+        }
+      ],
+      isRequired: true,
+      rule: [
+        {
+          required: true,
+          message: '请选择地区',
+          trigger: 'change'
+        }
+      ],
+      showPassword: false
+    },
+    {
+      field: 'number',
+      label: '数量',
+      placeholder: '请输入数量',
+      type: 'inputnumber',
+      isRequired: false,
+      rule: [],
+      showPassword: false,
+      disable: false
+    },
+    {
+      field: 'date',
+      label: '日期',
+      placeholder: '',
+      type: 'datepicker',
+      isRequired: false,
+      rule: [],
+      showPassword: false
+    }
+  ]);
+  // 表单初始值
+  const formData = reactive({
+    name: '',
+    password: '',
+    category: '',
+    region: '',
+    number: 0,
+    date: '',
+    id: ''
+  });
   
   onMounted(() => {
     tableList();
@@ -143,22 +299,68 @@
     pagination.total = data.Total;
   }
   
-  const handleTableControl = (type: string) => {
+  const handleTableControl = (params) => {
+    const { type, value } = params;
     if (type === '刷新') {
       tableList();
+    } else if (type === '删除') {
+      if (value.length === 0) {
+        ElMessage.warning('请选择至少一条数据！')
+      } else {
+        dialogData.title = '删除';
+        dialogData.info = '确定将选择的用户删除?';
+        dialogData.tipsVisible = true;
+      }
+    } else if (type === '新建') {
+      dialogData.title = '新建';
+      formData.name = '';
+      formData.password = '';
+      formData.category = '';
+      formData.region = '';
+      formData.number = 0;
+      formData.date = '';
+      formData.id = '';
+      dialogData.formVisible = true;
     }
   }
   
   const tableChange = (params: {val: number}) => {
-    const { type } = params;
+    const { type, value } = params;
     switch (type) {
       case 'pagination':
         pagination.currentPage = params.val;
         break;
       case 'edit':
+        dialogData.title = '编辑';
+        formData.name = value.title;
+        formData.password = value.password;
+        formData.category = value.category;
+        formData.region = value.region;
+        formData.number = value.top;
+        formData.date = value.date;
+        formData.id = value.id;
+        dialogData.formVisible = true;
         break;
       default:
         break;
+    }
+  }
+  
+  const handleTipsDialog = (type: string) => {
+    if (type === 'tips') {
+      dialogData.tipsVisible = false;
+    } else if (type === 'del') {
+      dialogData.tipsVisible = false;
+      tableList();
+    }
+  }
+  
+  const handleFormDialog = (params) => {
+    const { type, value } = params;
+    if (type === 'form') {
+      dialogData.formVisible = false;
+    } else if (type === 'submit') {
+      dialogData.formVisible = false;
     }
   }
 </script>
