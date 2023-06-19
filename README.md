@@ -38,9 +38,10 @@ npm i vue3-dynamic-module
 ```
 ### 示例
 ```javascript
-  import DynamicModule from 'dynamic-module';
+  import DynamicModule from 'vue3-dynamic-module';
+  import 'vue3-dynamic-module/lib/style.css';
   // 如果这里引入报错的话，需要手动声明一个模块
-  // declare module 'dynamic-module'
+  // declare module 'vue3-dynamic-module'
 
   const app = createApp(App);
   app.use(DynamicModule);
@@ -57,8 +58,7 @@ npm i vue3-dynamic-module
     @data-change="tableChange" />
 </template>
 <script setup>
-  import DynamicTable from "./dynamic-table.vue";
-  import {reactive} from "vue";
+  import { reactive } from "vue";
 
   const tableItems = reactive({
     // 表格操作，自定义操作项
