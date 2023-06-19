@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts" name="DynamicSearch">
-  const changeFun = defineEmits(['changeSelect', 'searchClick']);
+  const changeFun = defineEmits(['handleSearch']);
   const props = defineProps({
     searchItem: {
       type: Array,
@@ -63,10 +63,13 @@
       type: type,
       value: value
     };
-    changeFun('changeSelect', params);
+    changeFun('handleSearch', params);
   };
   const searchClick = (type: string) => {
-    changeFun('searchClick', type);
+    const params = {
+      type: type
+    };
+    changeFun('handleSearch', params);
   };
 </script>
 

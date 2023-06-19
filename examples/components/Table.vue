@@ -1,5 +1,5 @@
 <template>
-  <DynamicSearch :search-item="searchItem"></DynamicSearch>
+  <DynamicSearch :search-item="searchItem" @handle-search="handleSearch"></DynamicSearch>
   <DynamicTable
     :table-items="tableItems"
     :pagination="pagination"
@@ -328,7 +328,7 @@
     const { type, value } = params;
     switch (type) {
       case 'pagination':
-        pagination.currentPage = params.val;
+        pagination.currentPage = value;
         break;
       case 'edit':
         dialogData.title = '编辑';
@@ -362,6 +362,10 @@
     } else if (type === 'submit') {
       dialogData.formVisible = false;
     }
+  }
+  
+  const handleSearch = (params) => {
+    const { type, value } = params;
   }
 </script>
 
