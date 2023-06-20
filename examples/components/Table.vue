@@ -295,6 +295,11 @@
   
   const tableList = async () => {
     const { data } = await getJson();
+    data.data.map((item) => {
+      if (item.url) {
+        return item.url = 'https://www.bing.com' + item.url;
+      }
+    })
     tableItems.tableData = data.data;
     pagination.total = data.Total;
   }

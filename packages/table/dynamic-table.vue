@@ -85,7 +85,7 @@
               <el-button link type="primary" size="small" @click="handleClick(val.type, scope.row)">{{val.label}}</el-button>
             </span>
               <span v-else-if="item.showImage">
-              <el-image :src="`https://www.bing.com${scope.row[`${item.value}`]}`" fit="scale-down" />
+              <el-image :src="scope.row[`${item.value}`]" fit="scale-down" />
             </span>
               <span v-else>{{ scope.row[`${item.value}`] }}</span>
             </template>
@@ -161,7 +161,6 @@
     pageSize: 10,
     total: 0
   });
-  const url = 'https://www.bing.com';
   const isMultiple = ref(false);
   const multipleSelection = ref([]);
   const controlList = ref([]);
