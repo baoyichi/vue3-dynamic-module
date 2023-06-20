@@ -1,7 +1,9 @@
 <template>
   <div class="container">
+    <!--  表格操作栏  -->
     <div class="table-control">
       <div v-for="item in controlList" :key="item.code" class="control-item">
+        <!--  不带icon的按钮  -->
         <el-button
           v-if="btIncludes.includes(item.btType)"
           :type="item.type"
@@ -11,10 +13,12 @@
           :bg="item.btType === 'threeLevel'"
           @click.stop="handleTableControl(item.label)"
         >{{ item.label }}</el-button>
+        <!--  带icon且有背景色的按钮  -->
         <el-button v-if="item.btType === 'iconTextBt'" :type="item.type"
                    @click.stop="handleTableControl(item.label)">
           <img :src="getAssetsFile(`${item.icon}.png`)" alt="" class="icon-size" />{{ item.label }}
         </el-button>
+        <!--  纯icon按钮，带tooltips  -->
         <el-tooltip
           v-if="item.btType === 'iconBt'"
           class="box-item"
@@ -25,6 +29,7 @@
             <img :src="getAssetsFile(`${item.icon}.png`)" alt="" class="icon-size" />
           </el-button>
         </el-tooltip>
+        <!--  列设置按钮  -->
         <el-tooltip
           v-if="item.btType === 'listSet'"
           class="box-item"
@@ -61,6 +66,7 @@
         </el-tooltip>
       </div>
     </div>
+    <!--  表格  -->
     <div class="table-wrap">
       <el-table
         ref="multipleTableRef"
@@ -81,15 +87,18 @@
             :sortable="item.sortable"
           >
             <template #default="scope">
-            <span v-if="item.value === 'control'" v-for="(val, num) in tableParams.operations" :key="num">
-              <el-button link type="primary" size="small" @click="handleClick(val.type, scope.row)">{{val.label}}</el-button>
-            </span>
+              <!--  表格操作列  -->
+              <span v-if="item.value === 'control'" v-for="(val, num) in tableParams.operations" :key="num">
+                <el-button link type="primary" size="small" @click="handleClick(val.type, scope.row)">{{val.label}}</el-button>
+              </span>
+              <!--  显示图片  -->
               <span v-else-if="item.showImage">
-              <el-image :src="scope.row[`${item.value}`]" fit="scale-down" />
-            </span>
+                <el-image :src="scope.row[`${item.value}`]" fit="scale-down" />
+              </span>
               <span v-else>{{ scope.row[`${item.value}`] }}</span>
             </template>
           </el-table-column>
+          <!--  表头筛选  -->
           <el-table-column
             v-if="item.filters"
             :prop="item.value"
@@ -121,7 +130,7 @@
 </template>
 
 <script setup lang="ts" name="DynamicTable">
-  import {onMounted, reactive, ref, watch} from "vue";
+  import { onMounted, reactive, ref, watch } from "vue";
   import { TableColumnCtx } from 'element-plus'
   
   const props = defineProps({
@@ -213,6 +222,7 @@
     }
     emit('dataChange', params);
   }
+  // 数据赋值渲染
   const dataRender = () => {
     const { header, tableData, tableOperations, multiple, tableControl } = props.tableItems;
     tableParams.headers = header;
@@ -221,7 +231,7 @@
     isMultiple.value = multiple;
     controlList.value = tableControl;
     listSetting.columList = header;
-    const {currentPage, pageSize, total} = props.pagination;
+    const { currentPage, pageSize, total } = props.pagination;
     tablePagination.currentPage = currentPage;
     tablePagination.pageSize = pageSize;
     tablePagination.total = total;
@@ -270,6 +280,7 @@
   const openPopover = () => {
     listSetting.visible = true;
   };
+  // 通过show设置列设置能否勾选
   const showAllColum = () => {
     listSetting.checkedColum = listSetting.columList.map((item: any) => {
       if (item.show) {
@@ -351,10 +362,6 @@
   width: auto;
 }
 
-.table-wrap .header-style {
-  background-color: #f2f2f2;
-}
-
 /*
 分页样式
  */
@@ -366,9 +373,5 @@
   display: block;
   clear: both;
   content: '';
-}
-
-.el-pagination > .is-first {
-  flex: 1;
 }
 </style>

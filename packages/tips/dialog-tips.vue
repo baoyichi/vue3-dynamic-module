@@ -37,7 +37,7 @@
 
   watch(
     () => props.dialogInfo,
-    (val: {tipsVisible: boolean}) => {
+    (val: { tipsVisible: boolean }) => {
       if (val) {
         dataRender();
       }
@@ -53,10 +53,12 @@
     dialog.info = info;
   }
   
+  // 关闭模态框
   const handleClose = () => {
     changeFun('handleTipsDialog', 'tips');
   }
   
+  // 删除操作
   const submitForm = () => {
     changeFun('handleTipsDialog', 'del');
   }

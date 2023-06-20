@@ -58,6 +58,11 @@
     }
   });
 
+  /**
+   * 下拉框选中事件
+   * @param type：下拉选项名称
+   * @param value：选中的值
+   */
   const handleClick = (type: string, value: any) => {
     const params = {
       type: type,
@@ -65,6 +70,10 @@
     };
     changeFun('handleSearch', params);
   };
+  /**
+   * 全局按钮
+   * @param type：按钮的名称
+   */
   const searchClick = (type: string) => {
     const params = {
       type: type

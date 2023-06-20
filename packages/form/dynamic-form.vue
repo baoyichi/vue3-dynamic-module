@@ -26,6 +26,7 @@
               :rules="item.rule"
               :style="itemStyle"
             >
+              <!--  非密码输入框  -->
               <template v-if="item.type === 'input' && !item.showPassword">
                 <el-input
                   v-model="ruleFormData[`${item.field}`]"
@@ -35,6 +36,7 @@
                   onfocus="this.removeAttribute('readonly')"
                 ></el-input>
               </template>
+              <!--  密码输入框  -->
               <template v-else-if="item.type === 'input' && item.showPassword">
                 <el-input
                   v-model="ruleFormData[`${item.field}`]"
@@ -43,7 +45,9 @@
                   :disabled="dialogData.title !== '新建'"
                 ></el-input>
               </template>
+              <!--  下拉选择器  -->
               <template v-else-if="item.type === 'select'">
+                <!--  根据disabled字段控制是否可选  -->
                 <el-select
                   v-if="dialogData.title === '新建'"
                   v-model="ruleFormData[`${item.field}`]"
@@ -72,6 +76,7 @@
                   />
                 </el-select>
               </template>
+              <!--  树结构下拉选择器  -->
               <template v-else-if="item.type === 'treeselect'">
                 <el-tree-select
                   v-model="ruleFormData[`${item.field}`]"
@@ -81,11 +86,13 @@
                   style="width: 100%"
                 ></el-tree-select>
               </template>
+              <!--  日期选择器  -->
               <template v-else-if="item.type === 'datepicker'">
                 <el-date-picker
                   v-model="ruleFormData[`${item.field}`]"
                 ></el-date-picker>
               </template>
+              <!--  数字输入框  -->
               <template v-else-if="item.type === 'inputnumber'">
                 <el-input-number
                   v-model="ruleFormData[`${item.field}`]"
