@@ -178,8 +178,8 @@
    * @param index
    */
   const indexMethod = (index: any) => {
-    const { currentPage, pageSize } = props.tableItems;
-    return index + 1 + (currentPage - 1) * pageSize;
+    const { pagination } = props.tableItems;
+    return index + 1 + (pagination.currentPage - 1) * pagination.pageSize;
   }
   /**
    * 分页跳转
