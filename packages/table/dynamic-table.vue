@@ -2,7 +2,7 @@
   <div class="container">
     <!--  表格操作栏  -->
     <div class="table-control">
-      <div v-for="item in controlList" :key="item.code" class="control-item">
+      <div v-for="item in tableItems.tableSetting" :key="item.code" class="control-item">
         <!--  不带icon的按钮  -->
         <el-button
           v-if="btIncludes.includes(item.btType)"
@@ -70,13 +70,13 @@
     <div class="table-wrap">
       <el-table
         ref="multipleTableRef"
-        :data="tableParams.datas"
+        :data="tableItems.dataSource"
         @selection-change="handleSelectionChange"
         stripe style="width: 100%"
       >
-        <el-table-column v-if="isMultiple" type="selection" fixed width="55" />
+        <el-table-column v-if="tableItems.showSelection" type="selection" fixed width="55" />
         <el-table-column type="index" width="70" label="序号" fixed :index="indexMethod" />
-        <template v-for="(item, index) in tableParams.headers" :key="index">
+        <template v-for="(item, index) in tableItems.columns" :key="index">
           <el-table-column
             v-if="item.show && !item.filters"
             :prop="item.value"
@@ -88,8 +88,8 @@
           >
             <template #default="scope">
               <!--  表格操作列  -->
-              <span v-if="item.value === 'control'" v-for="(val, num) in tableParams.operations" :key="num">
-                <el-button link type="primary" size="small" @click="handleClick(val.type, scope.row)">{{val.label}}</el-button>
+              <span v-if="item.value === 'control'" v-for="(val, num) in tableItems.tableRowHandlers" :key="num">
+                <el-button link type="primary" size="small" @click="handleClick(val.label, scope.row)">{{val.label}}</el-button>
               </span>
               <!--  显示图片  -->
               <span v-else-if="item.showImage">
@@ -116,12 +116,12 @@
       </el-table>
       <div class="pagination">
         <el-pagination
-          v-model:current-page="tablePagination.currentPage"
-          v-model:page-size="tablePagination.pageSize"
+          v-model:current-page="tableItems.pagination.currentPage"
+          v-model:page-size="tableItems.pagination.pageSize"
           :small="true"
           :background="true"
           layout="total, prev, pager, next, jumper"
-          :total="tablePagination.total"
+          :total="tableItems.pagination.total"
           @current-change="handleCurrentChange"
         />
       </div>
@@ -130,8 +130,8 @@
 </template>
 
 <script setup lang="ts" name="DynamicTable">
-  import { onMounted, reactive, ref, watch } from "vue";
-  import { TableColumnCtx } from 'element-plus'
+  import { reactive, ref, watch } from "vue";
+  import { ElLoading, TableColumnCtx } from 'element-plus';
   
   const props = defineProps({
     tableItems: {
@@ -140,39 +140,10 @@
       default: () => {
         return {};
       }
-    },
-    pagination: {
-      type: Object,
-      require: true,
-      default: () => {
-        return {};
-      }
     }
   });
-  
-  const emit = defineEmits(['handleTableControl', 'dataChange']);
-  const tableParams = reactive({
-    datas: [],
-    headers: [
-      {
-        label: '名称',
-        value: 'name',
-        width: '120',
-        show: true,
-        showOverflow: true,
-        showFixed: true
-      }
-    ],
-    operations: []
-  });
-  const tablePagination = reactive({
-    currentPage: 1,
-    pageSize: 10,
-    total: 0
-  });
-  const isMultiple = ref(false);
-  const multipleSelection = ref([]);
-  const controlList = ref([]);
+  const emit = defineEmits(['handleTableControl']);
+  let tableColumns = reactive([]);
   const listSetting = reactive({
     visible: false,
     checkAll: true,
@@ -180,7 +151,9 @@
     columList: [],
     checkedColum: [] as any
   });
-  const btIncludes = ['basic', 'secondary', 'threeLevel', 'text']
+  const multipleSelection = ref([]);
+  const btIncludes = ['basic', 'secondary', 'threeLevel', 'text'];
+  const loadingInstance = ElLoading.service({ text: '加载中...' });
 
   watch(
     () => props.tableItems,
@@ -191,9 +164,6 @@
     },
     { deep: true }
   )
-  onMounted(() => {
-    dataRender();
-  })
 
   /**
    * 获取assets静态资源
@@ -208,7 +178,7 @@
    * @param index
    */
   const indexMethod = (index: any) => {
-    const { currentPage, pageSize } = tablePagination;
+    const { currentPage, pageSize } = props.tableItems;
     return index + 1 + (currentPage - 1) * pageSize;
   }
   /**
@@ -220,23 +190,16 @@
       type: 'pagination',
       value: val
     }
-    emit('dataChange', params);
+    emit('handleTableControl', params);
   }
   // 数据赋值渲染
   const dataRender = () => {
-    const { header, tableData, tableOperations, multiple, tableControl } = props.tableItems;
-    tableParams.headers = header;
-    tableParams.datas = tableData;
-    tableParams.operations = tableOperations;
-    isMultiple.value = multiple;
-    controlList.value = tableControl;
-    listSetting.columList = header;
-    const { currentPage, pageSize, total } = props.pagination;
-    tablePagination.currentPage = currentPage;
-    tablePagination.pageSize = pageSize;
-    tablePagination.total = total;
+    const { columns } = props.tableItems;
+    tableColumns = [ ...columns ];
+    listSetting.columList = tableColumns;
     multipleSelection.value = [];
     showAllColum();
+    loadingInstance.close();
   }
   /**
    * 表格操作事件
@@ -260,7 +223,7 @@
       type: type,
       value: row
     }
-    emit('dataChange', params);
+    emit('handleTableControl', params);
   }
 
   const handleSelectionChange = (val: any) => {
@@ -294,24 +257,24 @@
    */
   const handleCheckAllChange = (val: boolean) => {
     if (val) {
-      tableParams.headers.map((item: any) => {
+      tableColumns.map((item: any) => {
         item.show = true;
       });
     } else {
-      tableParams.headers.map((item: any) => {
+      tableColumns.map((item: any) => {
         item.show = false;
       });
     }
     showAllColum();
     listSetting.isIndeterminate =
-      tableParams.headers.length > 0 && tableParams.headers.length < listSetting.columList.length;
+      tableColumns.length > 0 && tableColumns.length < listSetting.columList.length;
   };
   /**
    * 列选中
    * @param value
    */
   const handleCheckedChange = (value: string[]) => {
-    tableParams.headers.map((item: any) => {
+    tableColumns.map((item: any) => {
       item.show = value.includes(item.label);
     });
     showAllColum();

@@ -1,11 +1,14 @@
 {
   "name": "vue3-dynamic-module",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "private": false,
   "keywords": [
-    "vue3-dynamic-module",
+    "vue3",
+    "element plus",
     "dynamic-module",
-    "table"
+    "table",
+    "form",
+    "dialog"
   ],
   "scripts": {
     "dev": "vite --force --host --open",
@@ -27,7 +30,6 @@
   "dependencies": {
     "axios": "^1.4.0",
     "element-plus": "^2.3.6",
-    "vite-plugin-compression": "^0.5.1",
     "vue": "^3.3.2"
   },
   "devDependencies": {

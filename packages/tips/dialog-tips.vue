@@ -25,7 +25,7 @@
     info: ''
   })
   const props = defineProps({
-    dialogInfo: {
+    dialogData: {
       type: Object,
       require: true,
       default: () => {
@@ -36,7 +36,7 @@
   const changeFun = defineEmits(['handleTipsDialog'])
 
   watch(
-    () => props.dialogInfo,
+    () => props.dialogData,
     (val: { tipsVisible: boolean }) => {
       if (val) {
         dataRender();
@@ -47,7 +47,7 @@
   )
 
   const dataRender = () => {
-    const { title, width, info } = props.dialogInfo;
+    const { title, width, info } = props.dialogData;
     dialog.title = title;
     dialog.width = width;
     dialog.info = info;

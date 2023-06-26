@@ -1,23 +1,24 @@
 <template>
   <DynamicSearch :search-item="searchItem" @handle-search="handleSearch"></DynamicSearch>
-  <DynamicTable
-    :table-items="tableItems"
-    :pagination="pagination"
-    @handle-table-control="handleTableControl"
-    @data-change="tableChange"
-  ></DynamicTable>
-  <DialogTips :dialog-info="dialogData" @handle-tips-dialog="handleTipsDialog"></DialogTips>
-  <DynamicForm :dialog-data="dialogData" :form-data="formData" :form-items="formItems" @handle-form-dialog="handleFormDialog"></DynamicForm>
+  <DynamicTable :table-items="tableItems" @handle-table-control="handleTableControl"></DynamicTable>
+  <DialogTips :dialog-data="dialogData" @handle-tips-dialog="handleTipsDialog"></DialogTips>
+  <DynamicForm
+    :dialog-data="dialogData"
+    :form-data="formData"
+    :form-items="formItems"
+    @handle-form-dialog="handleFormDialog"
+  ></DynamicForm>
 </template>
 
 <script setup lang="ts">
   import DynamicTable from "../../packages/table/dynamic-table.vue";
   import { onMounted, reactive } from "vue";
   import { getJson } from "@/api/bacground-img";
-  import {ElMessage} from "element-plus";
+  import { ElMessage } from "element-plus";
   import DialogTips from "../../packages/tips/dialog-tips.vue";
   import DynamicForm from "../../packages/form/dynamic-form.vue";
   import DynamicSearch from "../../packages/search/dynamic-search.vue";
+  // import type { BasicTableProps } from "./types/basicTableProps";
 
   const searchItem = reactive([
     {
@@ -48,7 +49,7 @@
     }
   ]);
   const tableItems = reactive({
-    header: [
+    columns: [
       {
         label: '名称',
         value: 'title',
@@ -101,7 +102,7 @@
         showFixed: false
       }
     ],
-    tableControl: [
+    tableSetting: [
       {
         code: '3',
         btType: 'iconTextBt',
@@ -135,8 +136,8 @@
         icon: 'set'
       }
     ],
-    tableData: [],
-    tableOperations: [
+    dataSource: [],
+    tableRowHandlers: [
       {
         type: 'download',
         label: '下载原图'
@@ -146,12 +147,12 @@
         label: '编辑'
       }
     ],
-    multiple: true
-  });
-  const pagination = reactive({
-    currentPage: 1,
-    pageSize: 10,
-    total: 0
+    showSelection: true,
+    pagination: {
+      total: 0,
+      currentPage: 1,
+      pageSize: 10
+    }
   });
   // 模态框
   const dialogData = reactive({
@@ -300,42 +301,28 @@
         return item.url = 'https://www.bing.com' + item.url;
       }
     })
-    tableItems.tableData = data.data;
-    pagination.total = data.Total;
+    tableItems.dataSource = data.data;
+    tableItems.pagination.total = data.Total;
   }
   
   const handleTableControl = (params) => {
     const { type, value } = params;
-    if (type === '刷新') {
-      tableList();
-    } else if (type === '删除') {
-      if (value.length === 0) {
-        ElMessage.warning('请选择至少一条数据！')
-      } else {
-        dialogData.title = '删除';
-        dialogData.info = '确定将选择的用户删除?';
-        dialogData.tipsVisible = true;
-      }
-    } else if (type === '新建') {
-      dialogData.title = '新建';
-      formData.name = '';
-      formData.password = '';
-      formData.category = '';
-      formData.region = '';
-      formData.number = 0;
-      formData.date = '';
-      formData.id = '';
-      dialogData.formVisible = true;
-    }
-  }
-  
-  const tableChange = (params: {val: number}) => {
-    const { type, value } = params;
     switch (type) {
-      case 'pagination':
-        pagination.currentPage = value;
+      case '刷新':
+        tableList();
         break;
-      case 'edit':
+      case '新建':
+        dialogData.title = '新建';
+        formData.name = '';
+        formData.password = '';
+        formData.category = '';
+        formData.region = '';
+        formData.number = 0;
+        formData.date = '';
+        formData.id = '';
+        dialogData.formVisible = true;
+        break;
+      case '编辑':
         dialogData.title = '编辑';
         formData.name = value.title;
         formData.password = value.password;
@@ -345,6 +332,18 @@
         formData.date = value.date;
         formData.id = value.id;
         dialogData.formVisible = true;
+        break;
+      case 'pagination':
+        tableItems.pagination.currentPage = value;
+        break;
+      case '删除':
+        if (value.length === 0) {
+          ElMessage.warning('请选择至少一条数据！')
+        } else {
+          dialogData.title = '删除';
+          dialogData.info = '确定将选择的用户删除?';
+          dialogData.tipsVisible = true;
+        }
         break;
       default:
         break;
