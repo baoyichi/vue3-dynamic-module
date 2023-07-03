@@ -217,11 +217,12 @@
   /**
    * 表格数据操作
    * @param type: 操作的类型
+   * @param items：传入的表格行数据
    */
-  const handleClick = (type: string, row: any) => {
+  const handleClick = (type: string, items: any) => {
     const params = {
       type: type,
-      value: row
+      value: items
     }
     emit('handleTableControl', params);
   }
