@@ -199,7 +199,6 @@
     listSetting.columList = tableColumns;
     multipleSelection.value = [];
     showAllColum();
-    loadingInstance.close();
   }
   /**
    * 表格操作事件
