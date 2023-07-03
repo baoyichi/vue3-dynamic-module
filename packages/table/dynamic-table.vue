@@ -131,7 +131,7 @@
 
 <script setup lang="ts" name="DynamicTable">
   import { reactive, ref, watch } from "vue";
-  import { ElLoading, TableColumnCtx } from 'element-plus';
+  import { TableColumnCtx } from 'element-plus';
   
   const props = defineProps({
     tableItems: {
@@ -153,7 +153,6 @@
   });
   const multipleSelection = ref([]);
   const btIncludes = ['basic', 'secondary', 'threeLevel', 'text'];
-  const loadingInstance = ElLoading.service({ text: '加载中...' });
 
   watch(
     () => props.tableItems,

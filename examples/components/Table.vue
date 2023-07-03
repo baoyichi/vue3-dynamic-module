@@ -14,7 +14,7 @@
   import DynamicTable from "../../packages/table/dynamic-table.vue";
   import { onMounted, reactive } from "vue";
   import { getJson } from "@/api/bacground-img";
-  import {ElLoading, ElMessage} from "element-plus";
+  import { ElMessage } from "element-plus";
   import DialogTips from "../../packages/tips/dialog-tips.vue";
   import DynamicForm from "../../packages/form/dynamic-form.vue";
   import DynamicSearch from "../../packages/search/dynamic-search.vue";
@@ -303,7 +303,6 @@
     })
     tableItems.dataSource = data.data;
     tableItems.pagination.total = data.Total;
-    ElLoading.service().close();
   }
   
   const handleTableControl = (params) => {
