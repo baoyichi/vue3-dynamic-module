@@ -14,9 +14,8 @@
           @click.stop="handleTableControl(item.label)"
         >{{ item.label }}</el-button>
         <!--  带icon且有背景色的按钮  -->
-        <el-button v-if="item.btType === 'iconTextBt'" :type="item.type"
-                   @click.stop="handleTableControl(item.label)">
-          <img :src="getAssetsFile(`${item.icon}.png`)" alt="" class="icon-size" />{{ item.label }}
+        <el-button v-if="item.btType === 'iconTextBt'" :type="item.type" :icon="item.icon"
+                   @click.stop="handleTableControl(item.label)">{{ item.label }}
         </el-button>
         <!--  纯icon按钮，带tooltips  -->
         <el-tooltip
@@ -25,9 +24,7 @@
           :effect="item.effect"
           :content="item.label"
           :placement="item.placement">
-          <el-button link @click.stop="handleTableControl(item.label)">
-            <img :src="getAssetsFile(`${item.icon}.png`)" alt="" class="icon-size" />
-          </el-button>
+          <el-button link :icon="item.icon" @click.stop="handleTableControl(item.label)" />
         </el-tooltip>
         <!--  列设置按钮  -->
         <el-tooltip
@@ -40,9 +37,7 @@
           <div class="checkbox-box" @click.stop="openPopover">
             <el-popover v-model:visible="listSetting.visible" placement="right" :width="160" trigger="click">
               <template #reference>
-                <el-button link>
-                  <img :src="getAssetsFile(`${item.icon}.png`)" alt="" class="icon-size" />
-                </el-button>
+                <el-button link :icon="item.icon" />
               </template>
               <el-checkbox
                 v-model="listSetting.checkAll"
@@ -130,10 +125,10 @@
 </template>
 
 <script setup lang="ts" name="DynamicTable">
-  import { reactive, ref, watch } from "vue";
-  import { TableColumnCtx } from 'element-plus';
-  
-  const props = defineProps({
+import {reactive, ref, watch} from "vue";
+import {TableColumnCtx} from 'element-plus';
+
+const props = defineProps({
     tableItems: {
       type: Object,
       require: true,
@@ -163,14 +158,6 @@
     },
     { deep: true }
   )
-
-  /**
-   * 获取assets静态资源
-   * @param url
-   */
-  const getAssetsFile = (url: string) => {
-    return new URL(`../../examples/assets/icons/${url}`, import.meta.url).href;
-  }
 
   /**
    * 分页后序号连续

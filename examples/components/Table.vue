@@ -108,14 +108,14 @@
         btType: 'iconTextBt',
         type: 'primary',
         label: '新建',
-        icon: 'add'
+        icon: 'Plus'
       },
       {
         code: '4',
         btType: 'iconTextBt',
         type: 'danger',
         label: '删除',
-        icon: 'del'
+        icon: 'delete'
       },
       {
         code: '6',

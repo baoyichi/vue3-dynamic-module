@@ -80,5 +80,5 @@ a,
 }
 
 .el-pagination > .is-first {
-  flex: 1;
+  flex: 1!important;
 }
