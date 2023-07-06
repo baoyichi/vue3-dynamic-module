@@ -194,7 +194,7 @@ const props = defineProps({
     const params = {
       type: type
     }
-    if (type === '删除') {
+    if (type === '删除' || type === '批量删除') {
       params['value'] = multipleSelection.value;
     }
     emit('handleTableControl', params);
@@ -285,12 +285,6 @@ const props = defineProps({
 
 .container .control-item:last-child {
   margin-right: 0;
-}
-
-.container .control-item .icon-size {
-  height: 1rem;
-  width: 1rem;
-  margin-right: 2px;
 }
 
 /*

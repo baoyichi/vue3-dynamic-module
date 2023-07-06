@@ -34,7 +34,7 @@
         </template>
       </el-select>
       <!--   输入框   -->
-      <el-input v-if="item.isInput" v-model="item.value" placeholder="请输入"></el-input>
+      <el-input v-if="item.isInput" v-model="item.value" placeholder="请输入" clearable />
       <!--   搜索重置按钮   -->
       <div v-if="item.isBt" class="search-bt">
         <div v-for="(val, on) in item.options" :key="on" class="search-item">
@@ -84,7 +84,6 @@
 
 <style scoped>
 .search-bar {
-  background: #ffffff;
   padding: 1rem 12px;
   display: flex;
 }
