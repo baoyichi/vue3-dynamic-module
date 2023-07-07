@@ -11,11 +11,11 @@
           :plain="item.btType === 'secondary'"
           :text="item.btType === 'threeLevel'"
           :bg="item.btType === 'threeLevel'"
-          @click.stop="handleTableControl(item.label)"
+          @click.stop="handleTableControl(item.value)"
         >{{ item.label }}</el-button>
         <!--  带icon且有背景色的按钮  -->
         <el-button v-if="item.btType === 'iconTextBt'" :type="item.type" :icon="item.icon"
-                   @click.stop="handleTableControl(item.label)">{{ item.label }}
+                   @click.stop="handleTableControl(item.value)">{{ item.label }}
         </el-button>
         <!--  纯icon按钮，带tooltips  -->
         <el-tooltip
@@ -24,7 +24,7 @@
           :effect="item.effect"
           :content="item.label"
           :placement="item.placement">
-          <el-button link :icon="item.icon" @click.stop="handleTableControl(item.label)" />
+          <el-button link :icon="item.icon" @click.stop="handleTableControl(item.value)" />
         </el-tooltip>
         <!--  列设置按钮  -->
         <el-tooltip
@@ -194,7 +194,7 @@ const props = defineProps({
     const params = {
       type: type
     }
-    if (type === '删除' || type === '批量删除') {
+    if (type === 'del') {
       params['value'] = multipleSelection.value;
     }
     emit('handleTableControl', params);

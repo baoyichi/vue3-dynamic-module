@@ -108,6 +108,7 @@
         btType: 'iconTextBt',
         type: 'primary',
         label: '新建',
+        value: 'add',
         icon: 'Plus'
       },
       {
@@ -115,6 +116,7 @@
         btType: 'iconTextBt',
         type: 'danger',
         label: '删除',
+        value: 'del',
         icon: 'delete'
       },
       {
@@ -122,6 +124,7 @@
         btType: 'iconBt',
         type: 'primary',
         label: '刷新',
+        value: 'refresh',
         effect: 'dark',
         placement: 'top',
         icon: 'refresh'
@@ -336,7 +339,7 @@
       case 'pagination':
         tableItems.pagination.currentPage = value;
         break;
-      case '删除':
+      case 'del':
         if (value.length === 0) {
           ElMessage.warning('请选择至少一条数据！')
         } else {
