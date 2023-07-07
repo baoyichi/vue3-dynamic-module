@@ -120,6 +120,14 @@
         icon: 'delete'
       },
       {
+        code: '5',
+        btType: 'iconTextBt',
+        type: 'danger',
+        label: '批量删除',
+        value: 'del',
+        icon: 'delete'
+      },
+      {
         code: '6',
         btType: 'iconBt',
         type: 'primary',
@@ -310,11 +318,12 @@
   
   const handleTableControl = (params) => {
     const { type, value } = params;
+    console.log(params);
     switch (type) {
-      case '刷新':
+      case 'refresh':
         tableList();
         break;
-      case '新建':
+      case 'add':
         dialogData.title = '新建';
         formData.name = '';
         formData.password = '';
