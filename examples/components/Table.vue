@@ -318,7 +318,6 @@
   
   const handleTableControl = (params) => {
     const { type, value } = params;
-    console.log(params);
     switch (type) {
       case 'refresh':
         tableList();
@@ -372,7 +371,7 @@
   }
   
   const handleFormDialog = (params) => {
-    const { type, value } = params;
+    const { type } = params;
     if (type === 'form') {
       dialogData.formVisible = false;
     } else if (type === 'submit') {
