@@ -64,7 +64,6 @@
     <!--  表格  -->
     <div class="table-wrap">
       <el-table
-        v-loading="loading"
         ref="multipleTableRef"
         :data="tableItems.dataSource"
         @selection-change="handleSelectionChange"
@@ -126,8 +125,8 @@
 </template>
 
 <script setup lang="ts" name="DynamicTable">
-import {onMounted, reactive, ref, watch} from "vue";
-import {TableColumnCtx} from 'element-plus';
+  import {reactive, ref, watch} from "vue";
+  import {TableColumnCtx} from 'element-plus';
 
   const props = defineProps({
     tableItems: {
@@ -149,7 +148,6 @@ import {TableColumnCtx} from 'element-plus';
   });
   const multipleSelection = ref([]);
   const btIncludes = ['basic', 'secondary', 'threeLevel', 'text'];
-  const loading = ref(false);
 
   watch(
     () => props.tableItems,
@@ -160,10 +158,6 @@ import {TableColumnCtx} from 'element-plus';
     },
     { deep: true }
   )
-  
-  onMounted(() => {
-    loading.value = true;
-  })
 
   /**
    * 分页后序号连续
@@ -191,7 +185,6 @@ import {TableColumnCtx} from 'element-plus';
     listSetting.columList = tableColumns;
     multipleSelection.value = [];
     showAllColum();
-    loading.value = false;
   }
   /**
    * 表格操作栏
