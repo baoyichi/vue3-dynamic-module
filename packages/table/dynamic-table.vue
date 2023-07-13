@@ -64,6 +64,7 @@
     <!--  表格  -->
     <div class="table-wrap">
       <el-table
+        v-loading="tableLoading"
         ref="multipleTableRef"
         :data="tableItems.dataSource"
         @selection-change="handleSelectionChange"
@@ -83,9 +84,11 @@
           >
             <template #default="scope">
               <!--  表格操作列  -->
-              <span v-if="item.value === 'control'" v-for="(val, num) in tableItems.tableRowHandlers" :key="num">
+              <template v-if="item.value === 'control'">
+                <span v-for="(val, num) in tableItems.tableRowHandlers" :key="num">
                 <el-button link type="primary" size="small" @click="handleClick(val.label, scope.row)">{{val.label}}</el-button>
               </span>
+              </template>
               <!--  显示图片  -->
               <span v-else-if="item.showImage">
                 <el-image :src="scope.row[`${item.value}`]" fit="scale-down" />
@@ -125,7 +128,7 @@
 </template>
 
 <script setup lang="ts" name="DynamicTable">
-  import {reactive, ref, watch} from "vue";
+  import {onMounted, reactive, ref, watch} from "vue";
   import {TableColumnCtx} from 'element-plus';
 
   const props = defineProps({
@@ -138,6 +141,7 @@
     }
   });
   const emit = defineEmits(['handleTableControl']);
+  const tableLoading = ref(false);
   let tableColumns = reactive([]);
   const listSetting = reactive({
     visible: false,
@@ -151,13 +155,18 @@
 
   watch(
     () => props.tableItems,
-    (val) => {
+    (val: any) => {
       if (val) {
         dataRender();
       }
     },
     { deep: true }
   )
+  
+  onMounted(() => {
+    tableLoading.value = true;
+    console.log('children ---- ', tableLoading.value);
+  })
 
   /**
    * 分页后序号连续
@@ -180,11 +189,12 @@
   }
   // 数据赋值渲染
   const dataRender = () => {
-    const { columns } = props.tableItems;
+    const { columns, loading } = props.tableItems;
     tableColumns = [ ...columns ];
     listSetting.columList = tableColumns;
     multipleSelection.value = [];
     showAllColum();
+    tableLoading.value = loading;
   }
   /**
    * 表格操作栏

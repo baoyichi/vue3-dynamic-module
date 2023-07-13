@@ -12,9 +12,9 @@
 
 <script setup lang="ts">
   import DynamicTable from "../../packages/table/dynamic-table.vue";
-  import { onMounted, reactive } from "vue";
+  import {onMounted, reactive} from "vue";
   import { getJson } from "@/api/bacground-img";
-  import { ElMessage } from "element-plus";
+  import {ElMessage} from "element-plus";
   import DialogTips from "../../packages/tips/dialog-tips.vue";
   import DynamicForm from "../../packages/form/dynamic-form.vue";
   import DynamicSearch from "../../packages/search/dynamic-search.vue";
@@ -49,6 +49,7 @@
     }
   ]);
   const tableItems = reactive({
+    loading: true,
     columns: [
       {
         label: '名称',
@@ -306,14 +307,15 @@
   })
   
   const tableList = async () => {
-    const { data } = await getJson();
-    data.data.map((item) => {
+    const { data: {data, Total} } = await getJson();
+    data.map((item) => {
       if (item.url) {
-        return item.url = 'https://www.bing.com' + item.url;
+        item.url = 'https://www.bing.com' + item.url
       }
     })
-    tableItems.dataSource = data.data;
-    tableItems.pagination.total = data.Total;
+    tableItems.dataSource = data;
+    tableItems.pagination.total = Total;
+    tableItems.loading = false;
   }
   
   const handleTableControl = (params) => {
