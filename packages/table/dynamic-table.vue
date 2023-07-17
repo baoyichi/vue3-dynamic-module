@@ -165,7 +165,6 @@
   
   onMounted(() => {
     tableLoading.value = true;
-    console.log('children ---- ', tableLoading.value);
   })
 
   /**
