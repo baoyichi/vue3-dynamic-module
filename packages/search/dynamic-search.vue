@@ -11,6 +11,7 @@
         collapse-tags
         collapse-tags-tooltip
         @change="handleClick(item.label, item.value)"
+        style="width: 200px"
       >
         <!--    分组    -->
         <template v-if="item.isGroup">
@@ -34,7 +35,7 @@
         </template>
       </el-select>
       <!--   输入框   -->
-      <el-input v-if="item.isInput" v-model="item.value" placeholder="请输入" clearable />
+      <el-input v-if="item.isInput" v-model="item.value" placeholder="请输入" clearable style="width: 200px" />
       <!--   搜索重置按钮   -->
       <div v-if="item.isBt" class="search-bt">
         <div v-for="(val, on) in item.options" :key="on" class="search-item">
