@@ -4,7 +4,6 @@
   <DialogTips :dialog-data="dialogData" @handle-tips-dialog="handleTipsDialog"></DialogTips>
   <DynamicForm
     :dialog-data="dialogData"
-    :form-data="formData"
     :form-items="formItems"
     @handle-form-dialog="handleFormDialog"
   ></DynamicForm>
@@ -175,53 +174,54 @@
     info: ''
   });
   // 表单label项
-  const formItems = reactive([
-    {
-      field: 'title',
-      label: '名称',
-      placeholder: '请输入名称',
-      type: 'input',
-      isRequired: true,
-      rule: [
-        {
-          required: true,
-          message: '请输入名称',
-          trigger: 'blur'
-        }
-      ],
-      showPassword: false
+  const formItems = reactive({
+    formData: {
+      title: '',
+      copyright: '',
+      startdate: '',
+      id: ''
     },
-    {
-      field: 'copyright',
-      label: '图片源',
-      placeholder: '请输入',
-      type: 'input',
-      isRequired: true,
-      rule: [
-        {
-          required: true,
-          message: '请输入图片源',
-          trigger: 'blur'
-        }
-      ],
-      showPassword: false
-    },
-    {
-      field: 'startdate',
-      label: '日期',
-      placeholder: '',
-      type: 'datepicker',
-      isRequired: false,
-      rule: [],
-      showPassword: false
-    }
-  ]);
-  // 表单初始值
-  let formData = reactive({
-    title: '',
-    copyright: '',
-    startdate: '',
-    id: ''
+    formLabels: [
+      {
+        field: 'title',
+        label: '名称',
+        placeholder: '请输入名称',
+        type: 'input',
+        isRequired: true,
+        rule: [
+          {
+            required: true,
+            message: '请输入名称',
+            trigger: 'blur'
+          }
+        ],
+        showPassword: false
+      },
+      {
+        field: 'copyright',
+        label: '图片源',
+        placeholder: '请输入',
+        type: 'input',
+        isRequired: true,
+        rule: [
+          {
+            required: true,
+            message: '请输入图片源',
+            trigger: 'blur'
+          }
+        ],
+        showPassword: false
+      },
+      {
+        field: 'startdate',
+        label: '日期',
+        placeholder: '',
+        type: 'datepicker',
+        isRequired: false,
+        rule: [],
+        showPassword: false
+      }
+    ]
   });
   
   onMounted(() => {
@@ -242,6 +242,7 @@
   
   const handleTableControl = (params) => {
     const { type, value } = params;
+    const { formData } = formItems;
     switch (type) {
       case 'refresh':
         tableList();
@@ -251,7 +252,7 @@
         Object.keys(formData).forEach(key => formData[key] = '');
         dialogData.formVisible = true;
         break;
-      case '编辑':
+      case 'edit':
         dialogData.title = '编辑';
         Object.assign(formData, value);
         dialogData.formVisible = true;

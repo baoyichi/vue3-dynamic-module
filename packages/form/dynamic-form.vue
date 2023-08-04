@@ -17,7 +17,7 @@
       status-icon
     >
       <el-row>
-        <template v-for="(item, index) in formItems" :key="index">
+        <template v-for="(item, index) in formLabel" :key="index">
           <el-col>
             <el-form-item
               v-if="!item.disable"
@@ -126,16 +126,11 @@
   });
   const ruleFormRef = ref<FormInstance>();
   const ruleFormData = ref({});
+  const formLabel = ref([]);
+  
   const props = defineProps({
-    dialogData: {
-      type: Object,
-      default: () => {}
-    },
-    formData: Object,
-    formItems: {
-      type: Array,
-      default: () => []
-    },
+    dialogData: Object,
+    formItems: Object,
     labelWidth: {
       type: String,
       default: () => '120px'
@@ -164,11 +159,13 @@
   watch(
     () => props.dialogData,
     (val: any) => {
+      const { formData, formLabels } = props.formItems;
+      formLabel.value = formLabels;
       if (val.formVisible) {
         dialogData.title = val.title;
         dialogData.width = val.width;
         nextTick(() => {
-          ruleFormData.value = JSON.parse(JSON.stringify(props.formData));
+          ruleFormData.value = JSON.parse(JSON.stringify(formData));
         });
       }
       dialogData.dialogVisible = val.formVisible;
@@ -177,8 +174,10 @@
   );
 
   onMounted(() => {
-    if (props.formData) {
-      ruleFormData.value = props.formData;
+    const { formData, formLabels } = props.formItems;
+    formLabel.value = formLabels;
+    if (formData) {
+      ruleFormData.value = formData;
     }
   });
 

@@ -86,7 +86,7 @@
               <!--  表格操作列  -->
               <template v-if="item.value === 'control'">
                 <span v-for="(val, num) in tableItems.tableRowHandlers" :key="num">
-                <el-button link type="primary" size="small" @click="handleClick(val.label, scope.row)">{{val.label}}</el-button>
+                <el-button link type="primary" size="small" @click="handleClick(val.type, scope.row)">{{val.label}}</el-button>
               </span>
               </template>
               <!--  显示图片  -->
