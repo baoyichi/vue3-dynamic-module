@@ -126,17 +126,12 @@
   });
   const ruleFormRef = ref<FormInstance>();
   const ruleFormData = ref({});
-  const menuResolve = ref([]);
   const props = defineProps({
     dialogData: {
       type: Object,
-      require: false,
       default: () => {}
     },
-    formData: {
-      type: Object,
-      required: true
-    },
+    formData: Object,
     formItems: {
       type: Array,
       default: () => []
@@ -174,7 +169,6 @@
         dialogData.width = val.width;
         nextTick(() => {
           ruleFormData.value = JSON.parse(JSON.stringify(props.formData));
-          ruleFormRef.value?.resetFields();
         });
       }
       dialogData.dialogVisible = val.formVisible;
@@ -198,7 +192,6 @@
           value: ruleFormData.value
         }
         changeFun('handleFormDialog', params);
-        ruleFormRef.value?.resetFields();
       } else {
         console.log('error submit!', fields);
       }

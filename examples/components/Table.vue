@@ -174,22 +174,10 @@
     width: '30%',
     info: ''
   });
-  // 密码校验
-  const checkPass = (rule: any, value: any, callback: any) => {
-    if (value === '') {
-      if (dialogData.title === '新增') {
-        callback(new Error('请输入密码'));
-      } else {
-        callback();
-      }
-    } else {
-      callback();
-    }
-  };
   // 表单label项
   const formItems = reactive([
     {
-      field: 'name',
+      field: 'title',
       label: '名称',
       placeholder: '请输入名称',
       type: 'input',
@@ -204,85 +192,22 @@
       showPassword: false
     },
     {
-      field: 'password',
-      label: '密码',
-      placeholder: '请输入密码',
+      field: 'copyright',
+      label: '图片源',
+      placeholder: '请输入',
       type: 'input',
       isRequired: true,
       rule: [
         {
           required: true,
-          trigger: 'blur',
-          validator: checkPass
-        }
-      ],
-      showPassword: true,
-      disable: false
-    },
-    {
-      field: 'category',
-      label: '类型',
-      placeholder: '请选择类型',
-      type: 'select',
-      options: [
-        {
-          label: '风景',
-          value: 'view'
-        },
-        {
-          label: '动物',
-          value: 'animal'
-        }
-      ],
-      isRequired: false,
-      rule: [],
-      showPassword: false
-    },
-    {
-      field: 'region',
-      label: '地区',
-      placeholder: '请选择地区',
-      type: 'treeselect',
-      options: [
-        {
-          value: '1',
-          label: '四川省',
-          children: [
-            {
-              value: '1-1',
-              label: '成都市',
-              children: [
-                {
-                  value: '1-1-1',
-                  label: '天府新区',
-                },
-              ],
-            },
-          ],
-        }
-      ],
-      isRequired: true,
-      rule: [
-        {
-          required: true,
-          message: '请选择地区',
-          trigger: 'change'
+          message: '请输入图片源',
+          trigger: 'blur'
         }
       ],
       showPassword: false
     },
     {
-      field: 'number',
-      label: '数量',
-      placeholder: '请输入数量',
-      type: 'inputnumber',
-      isRequired: false,
-      rule: [],
-      showPassword: false,
-      disable: false
-    },
-    {
-      field: 'date',
+      field: 'startdate',
       label: '日期',
       placeholder: '',
       type: 'datepicker',
@@ -292,13 +217,10 @@
     }
   ]);
   // 表单初始值
-  const formData = reactive({
-    name: '',
-    password: '',
-    category: '',
-    region: '',
-    number: 0,
-    date: '',
+  let formData = reactive({
+    title: '',
+    copyright: '',
+    startdate: '',
     id: ''
   });
   
@@ -326,24 +248,12 @@
         break;
       case 'add':
         dialogData.title = '新建';
-        formData.name = '';
-        formData.password = '';
-        formData.category = '';
-        formData.region = '';
-        formData.number = 0;
-        formData.date = '';
-        formData.id = '';
+        Object.keys(formData).forEach(key => formData[key] = '');
         dialogData.formVisible = true;
         break;
       case '编辑':
         dialogData.title = '编辑';
-        formData.name = value.title;
-        formData.password = value.password;
-        formData.category = value.category;
-        formData.region = value.region;
-        formData.number = value.top;
-        formData.date = value.date;
-        formData.id = value.id;
+        Object.assign(formData, value);
         dialogData.formVisible = true;
         break;
       case 'pagination':
